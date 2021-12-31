@@ -1,6 +1,6 @@
-package org.acme.controller;
+package org.acme.web.resource;
 
-import org.acme.model.Task;
+import org.acme.model.TaskTO;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -11,29 +11,29 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Path("/cadastro")
-public class CadResource {
-    public static List<Task> task = new ArrayList<>();
+@Path("/api")
+public class TaskResource {
+    public static List<TaskTO> taskTO = new ArrayList<>();
 
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getCad(){
-        return Response.ok(task).build();
+        return Response.ok(taskTO).build();
     }
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/size")
     public Integer countCad(){
-        return  task.size();
+        return  taskTO.size();
     }
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response createCad(Task newCad){
-        task.add(newCad);
-        return Response.ok(task).build();
+    public Response createCad(TaskTO newCad){
+        taskTO.add(newCad);
+        return Response.ok(taskTO).build();
     }
 
 
@@ -43,11 +43,11 @@ public class CadResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateCad(@PathParam("id") Long id,
                                 @QueryParam("texto") String texto){
-        task =  task.stream().map(task -> {
-            if (Objects.equals(task.getId(), id)){
-                task.setTexto(texto);
+        taskTO =  taskTO.stream().map(taskTO -> {
+            if (Objects.equals(taskTO.getId(), id)){
+                taskTO.setValue(taskTO.value);
             }
-            return task;
+            return taskTO;
         }).collect(Collectors.toList());
         return Response.ok().build();
     }
@@ -56,11 +56,11 @@ public class CadResource {
     @Path("{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response deleteCad(@PathParam("id")  Long id){
-       Optional<Task> cadToDelete =  task.stream().filter(task -> Objects.equals(task.getId(), id))
+       Optional<TaskTO> cadToDelete =  taskTO.stream().filter(taskTO -> Objects.equals(taskTO.getId(), id))
                 .findFirst();
        boolean removed = false;
        if (cadToDelete.isPresent()){
-           removed = task.remove(cadToDelete.get());
+           removed = taskTO.remove(cadToDelete.get());
        }
        if (removed){
            return Response.noContent().build();

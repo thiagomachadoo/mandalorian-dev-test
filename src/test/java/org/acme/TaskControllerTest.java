@@ -1,4 +1,4 @@
-package org.acme.redis;
+package org.acme.controller;
 
 import static org.hamcrest.Matchers.is;
 
@@ -11,7 +11,7 @@ import static io.restassured.RestAssured.given;
 import io.restassured.http.ContentType;
 
 @QuarkusTest
-public class IncrementResourceTest {
+public class TaskControllerTest {
 
     @Test
     public void testRedisOperations() {

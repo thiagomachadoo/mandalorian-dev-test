@@ -1,4 +1,4 @@
-package org.acme.redis;
+package org.acme.service;
 
 import io.quarkus.redis.client.RedisClient;
 import io.quarkus.redis.client.reactive.ReactiveRedisClient;
@@ -12,9 +12,12 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 @Singleton
-class IncrementService {
+public
+class TaskService {
 
     @Inject
     RedisClient redisClient;
@@ -22,16 +25,17 @@ class IncrementService {
     @Inject
     ReactiveRedisClient reactiveRedisClient;
 
-    Uni<Void> del(String key) {
+
+    public Uni<Void> del(String key) {
         return reactiveRedisClient.del(Arrays.asList(key))
                 .map(response -> null);
     }
 
-    String get(String key) {
+    public String get(String key) {
         return redisClient.get(key).toString();
     }
 
-    void set(String key, Integer value) {
+    public void set(String key, @Size(min = 10) @Pattern(regexp = "^[a-zA-Z ][a-zA-Z0-9 ]+$") String value) {
         redisClient.set(Arrays.asList(key, value.toString()));
     }
 
@@ -39,7 +43,7 @@ class IncrementService {
         redisClient.incrby(key, incrementBy.toString());
     }
 
-    Uni<List<String>> keys() {
+    public Uni<List<String>> keys() {
         return reactiveRedisClient
                 .keys("*")
                 .map(response -> {
